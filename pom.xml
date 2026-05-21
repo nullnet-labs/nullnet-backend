@@ -28,66 +28,142 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		
+		<!--
+			For use while running SonarQube server on my local system at 
+			localhost:9000
+			
+			Scans are initiated through my own custom Maven build 
+			configuration in Eclipse. In deployment, I would get the Sonar 
+			token from an environment config that reads its value from a 
+			secret and makes the value available for use in the application.
+		-->
+		<sonar.projectKey>Project-Nullnet</sonar.projectKey>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.token>${env.SONAR_TOKEN}</sonar.token>
+		<sonar.test.exclusions>
+			**/testclassfailures/**
+		</sonar.test.exclusions>
 	</properties>
+	
 	<dependencies>
+		<!-- Spring Boot Starter - Basic Spring Starter project backbone -->
+		<!-- From Spring Initializr -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-h2console</artifactId>
+			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>3.0.2</version>
-		</dependency>
-
+		
+		<!-- For application hot reloading during local development -->
+		<!-- From Spring Initializr -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		
+		<!-- Testing dependency bundle - JUnit, Mockito -->
+		<!-- From Spring Initializr -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Spring Boot Security -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- Rest API Controller dependencies -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- Additional MVC from Spring Initializr -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		
+		<!-- Springdoc OpenAPI documentation tool that also runs Swagger UI -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+		<dependency>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		    <version>3.0.2</version>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- JPA entity support for interfacing with databases -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
+		<!-- PostgreSQL dialect -->
+		<!-- Source: https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- For local H2 database -->
+		<!-- Source: https://mvnrepository.com/artifact/com.h2database/h2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<!-- RECOMMENDED to use "test" scope later on, if not switching entirely to testcontainers postgres -->
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-h2console</artifactId>
 		</dependency>
+		
+		<!-- For quicker boilerplate -->
+		<!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <optional>true</optional>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- Required for @WebMvcTest in Spring Boot 4.X -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webmvc-test -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webmvc-test</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- Required for @DataJpaTest in Spring Boot 4.X -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa-test -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- Required for @WithMockUser in Spring Boot 4.X, for testing routes with auth states -->
+		<!-- From Spring Initializr -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+		
+		<!-- For Docker-composable local test-scope instances of infra & service dependencies -->
+		<!-- For more advanced testing once setup is off the ground -->
+		<!-- From Spring Initializr -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>
@@ -102,6 +178,28 @@
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers-postgresql</artifactId>
 			<scope>test</scope>
+		</dependency>
+		
+		<!-- Internal web browser automation -->
+		<!-- Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-java</artifactId>
+		</dependency>
+		
+		<!-- Internal cache enabler -->
+		<!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		
+		<!-- Internal cache provider -->
+		<!-- Source: https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+		<dependency>
+		    <groupId>com.github.ben-manes.caffeine</groupId>
+		    <artifactId>caffeine</artifactId>
+		    <scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -155,7 +253,89 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- Alleviates a warning about adding Mockito as an agent in my build -->
+			<!-- From Mockito documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+				    <execution>
+				        <goals>
+				            <goal>properties</goal>
+				        </goals>
+				    </execution>
+				</executions>
+			</plugin>
+			
+			<!-- 
+				Above & below plugins are part of the same setup.
+				
+				The argline path was selected based on this warning for not doing this setup:
+				
+				WARNING: A Java agent has been loaded dynamically (C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+			-->
+			<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <configuration>
+	            	<!-- using "${argline}" to APPEND TO the arguments instead of replacing them -->
+	            	<!-- needed for Jacoco to work, as it injects " -javaagent:jacocoagent.jar " -->
+	                <argLine>
+	                    ${argLine} -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar
+	                </argLine>
+	            </configuration>
+	        </plugin>
+	        
+	        <!-- JaCoCo test coverage report tool -->
+	        <!-- Source: https://www.baeldung.com/jacoco -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<!-- version retrieved April 12, 2026, from https://www.eclemma.org/jacoco/ -->
+				<version>0.8.14</version>
+				<executions>
+					<execution>
+						<goals>
+					    	<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- Sonar for code linting -->
+			<!-- Source: https://mvnrepository.com/artifact/org.sonarsource.scanner.maven/sonar-maven-plugin -->
+			<!-- Running as plugin; this doesn't belong in the runtime, it only analyzes the build -->
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>5.6.0.6792</version>
+		    </plugin>
 		</plugins>
 	</build>
-
+	
+	<!-- Additional Jacoco setup -->
+	<!-- https://www.jacoco.org/jacoco/trunk/doc/maven.html -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
