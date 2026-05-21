@@ -3,9 +3,6 @@
 # Compiled class file
 *.class
 
-# Log file
-*.log
-
 # BlueJ files
 *.ctxt
 
@@ -25,20 +22,31 @@
 hs_err_pid*
 replay_pid*
 
-
-
 ### SPRING INITIALIZR BASICS ###
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://maven.apache.org/wrapper/#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse m2e generated files
+### Eclipse Core ###
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
 
 ### STS ###
 .apt_generated
-.classpath
 .factorypath
-.project
 .settings
 .springBeans
 .sts4-cache
@@ -61,3 +69,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### H2 Local Database ###
+data/*.db
+
+### Logging ###
+*.log
+*.log.*.gz
