@@ -1,4 +1,4 @@
-package network.thenull.api.config;
+package network.thenull.api.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
