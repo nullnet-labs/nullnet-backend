@@ -9,6 +9,10 @@ import jakarta.persistence.MapsId;
 import lombok.Data;
 import network.thenull.api.common.entity.id.HyperlinkId;
 
+/**
+ * Links between sites. One site can link to many others, many others can link 
+ * to one site.
+ */
 @Entity
 @Data
 public class Hyperlink {

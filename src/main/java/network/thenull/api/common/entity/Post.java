@@ -16,6 +16,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
+/**
+ * Full info for each Web page posting in the application.
+ */
 @Entity
 @Data
 public class Post {
@@ -31,14 +34,22 @@ public class Post {
 	@Column(nullable=false)
 	private String url;
 	
+	/**
+	 * Fully qualified domain name.
+	 * 
+	 * At least at the start, only one posting will be allowed per domain.
+	 */
+	@Column(nullable=false)
+	private String fqdn;
+	
 	@Column(nullable=false)
 	private String title;
 	
 	@Column(nullable=true)
-	private String thumbnail;
+	private String thumbnailUrl;
 	
 	@Column(nullable=true)
-	private String image;
+	private String imageUrl;
 	
 	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
 	private Set<PostTag> postTags = new HashSet<>();

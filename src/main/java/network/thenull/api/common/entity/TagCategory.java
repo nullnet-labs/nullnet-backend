@@ -10,6 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
+/**
+ * Categories that tags fall under. Makes for a cleaner UI tag display.
+ */
 @Entity
 @Data
 public class TagCategory {

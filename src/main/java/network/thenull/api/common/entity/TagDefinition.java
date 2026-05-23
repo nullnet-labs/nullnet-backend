@@ -9,6 +9,11 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
+/**
+ * Definitions for tags. Not referenced by Tag items themselves, as the 
+ * definition content may be long and shouldn't be included every time the 
+ * Tags themselves are queried.
+ */
 @Entity
 @Data
 public class TagDefinition {

@@ -9,6 +9,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
+/**
+ * Which tags belong to which posts.
+ */
 @Entity
 @Data
 public class PostTag {

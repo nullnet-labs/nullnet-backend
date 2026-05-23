@@ -11,6 +11,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
+/**
+ * Tags that are applied to posts for search filtering & discoverability.
+ * 
+ * Each tag falls under a category and may map to another tag if it's a 
+ * synonym for that other tag.
+ */
 @Entity
 @Data
 public class Tag {
@@ -30,7 +36,10 @@ public class Tag {
 	@JoinColumn(name="category_id", nullable=false)
 	private TagCategory category;
 	
-	// for tags that are aliases for other tags, such as terms translated between languages
+	/**
+	 * For tags that are aliases for other tags, such as terms translated 
+	 * between languages.
+	 */
 	@ManyToOne(fetch=FetchType.LAZY, optional=true)
 	@JoinColumn(name="canonical_tag_id", nullable=true)
 	private Tag canonicalTag;
