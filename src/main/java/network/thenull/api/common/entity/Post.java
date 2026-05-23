@@ -10,6 +10,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
@@ -48,8 +50,13 @@ public class Post {
 	private Set<Hyperlink> links = new HashSet<>();
 	
 	@Column(nullable=false)
-	private Instant createdAt;
+	private Instant postedAt;
 	
-	@Column(nullable=false)
-	private Boolean awaitingReview;
+	@ManyToOne(fetch=FetchType.LAZY, optional=false)
+	@JoinColumn(name="posted_by", nullable=false)
+	private User postedBy;
+	
+	@ManyToOne(fetch=FetchType.LAZY, optional=false)
+	@JoinColumn(name="post_status", nullable=false)
+	private PostStatus status;
 }
