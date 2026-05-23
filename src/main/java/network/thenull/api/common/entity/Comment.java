@@ -13,34 +13,28 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
-/**
- * User data.
- * 
- * At the start of the app, this will only really be needed for admin & 
- * moderation. An "Anonymous" user is sufficient for anonymous posting while 
- * the site still has low traffic.
- */
 @Entity
 @Data
-public class User {	
+public class Comment {
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_ids_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="comment_ids_sequence")
 	@SequenceGenerator(
-		name="user_ids_sequence",
-		sequenceName="user_ids_sequence",
+		name="comment_ids_sequence",
+		sequenceName="comment_ids_sequence",
 		allocationSize=1
 	)
 	private Long id;
 	
-	@Column(nullable=false, length=40)
-	private String username;
-	
-	@Column(nullable=false, length=100)
-	private String passwordHash;
+	@ManyToOne(fetch=FetchType.LAZY, optional=false)
+	@JoinColumn(name="user_id", nullable=false)
+	private User user;
 	
 	@ManyToOne(fetch=FetchType.LAZY, optional=false)
-	@JoinColumn(name="role", nullable=false)
-	private UserRole role;
+	@JoinColumn(name="post_id", nullable=false)
+	private Post post;
+	
+	@Column(nullable=false, columnDefinition="TEXT")
+	private String content;
 	
 	@Column(nullable=false)
 	private Instant creationTime;

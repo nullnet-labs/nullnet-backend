@@ -60,8 +60,11 @@ public class Post {
 	@OneToMany(mappedBy="linkedFrom", fetch=FetchType.LAZY)
 	private Set<Hyperlink> links = new HashSet<>();
 	
+	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
+	private Set<Comment> comments = new HashSet<>();
+	
 	@Column(nullable=false)
-	private Instant postedAt;
+	private Instant creationTime;
 	
 	@ManyToOne(fetch=FetchType.LAZY, optional=false)
 	@JoinColumn(name="posted_by", nullable=false)
