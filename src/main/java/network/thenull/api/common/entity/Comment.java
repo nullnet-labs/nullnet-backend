@@ -13,6 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
+/**
+ * Comments users can make on posts.
+ */
 @Entity
 @Data
 public class Comment {
