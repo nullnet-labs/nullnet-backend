@@ -3,10 +3,23 @@ package network.thenull.api.posts;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import network.thenull.api.posts.dto.PostBrowsingPageDto;
 
 @Service
 @Slf4j
 public class PostService {
+	
+	private final PostRepository postRepo;
+	
+	public PostService(PostRepository postRepo) {
+		this.postRepo = postRepo;
+	}
+	
+	
+	
+	public Long getExistingPostId(String domain) {
+		return postRepo.findIdByDomain(domain).get();
+	}
 	
 	public PostBrowsingPageDto getPostBrowsingPageData(Integer page, String search) {
 		String[]searchTokens = search.split(" ");

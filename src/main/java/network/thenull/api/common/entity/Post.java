@@ -40,7 +40,7 @@ public class Post {
 	 * At least at the start, only one posting will be allowed per domain.
 	 */
 	@Column(nullable=false)
-	private String fqdn;
+	private String domain;
 	
 	@Column(nullable=false)
 	private String title;

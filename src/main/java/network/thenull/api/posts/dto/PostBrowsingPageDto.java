@@ -1,4 +1,4 @@
-package network.thenull.api.posts;
+package network.thenull.api.posts.dto;
 
 import java.util.List;
 
