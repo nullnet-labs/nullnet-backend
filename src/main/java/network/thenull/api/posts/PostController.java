@@ -1,5 +1,6 @@
 package network.thenull.api.posts;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -44,20 +45,25 @@ public class PostController {
 		}
 		
 		try {
+			// implicitly validates that the input string is a URL
 			URI uri = new URI(url.toLowerCase());
 			String domain = uri.getHost();
 			
 			Long existingPostId = postService.getExistingPostId(domain);
+			// implicitly validates that the URL points to a valid Web page
+			String pageTitle = postService.getPageTitle(url);
 			
 			return ResponseEntity.ok()
 				.body(new PostPreviewDto(
 					existingPostId != null,
 					existingPostId,
-					postService.getPageTitle(url)
+					pageTitle
 				))
 			;
 		} catch(URISyntaxException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed URL");
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested Web page couldn't be reached");
 		}
 	}
 	
