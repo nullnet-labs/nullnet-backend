@@ -57,7 +57,8 @@ public class PostController {
 				.body(new PostPreviewDto(
 					existingPostId != null,
 					existingPostId,
-					pageTitle
+					pageTitle,
+					url
 				))
 			;
 		} catch(URISyntaxException e) {
@@ -65,6 +66,21 @@ public class PostController {
 		} catch (IOException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested Web page couldn't be reached");
 		}
+	}
+	
+	@GetMapping("/preview/screenshot")
+	public ResponseEntity<byte[]> getPreviewScreenshot(
+		@RequestParam(required=true) String url
+	) {
+		if(!url.startsWith("http://") && !url.startsWith("https://")) {
+			url = "https://" + url;
+		}
+		
+		return ResponseEntity.ok()
+			.contentType(MediaType.IMAGE_PNG)
+			.header("Content-Disposition", "filename=\"screenshot.png\"")
+			.body(postService.getPageScreenshot(url))
+		;
 	}
 	
 	@PostMapping("/update/request")

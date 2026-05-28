@@ -11,5 +11,8 @@ public record PostPreviewDto(
 	Long existingPostId,
 	
 	@Schema(description="The title of the page for the given post.")
-	String postTitle
+	String postTitle,
+	
+	@Schema(description="The validated external URL of the page for the given post.")
+	String validatedUrl
 ) {}

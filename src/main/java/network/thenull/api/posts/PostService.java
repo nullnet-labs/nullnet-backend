@@ -30,6 +30,10 @@ public class PostService {
 		return webSnapshotService.getPageTitle(url);
 	}
 	
+	public byte[] getPageScreenshot(String url) {
+		return webSnapshotService.getPageScreenshot(url);
+	}
+	
 	public PostBrowsingPageDto getPostBrowsingPageData(Integer page, String search) {
 		String[]searchTokens = search.split(" ");
 		
