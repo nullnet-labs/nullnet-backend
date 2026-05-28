@@ -21,6 +21,12 @@ public class PostService {
 		return postRepo.findIdByDomain(domain).get();
 	}
 	
+	public String getPageTitle(String url) {
+		
+		
+		return "[Placeholder title]";
+	}
+	
 	public PostBrowsingPageDto getPostBrowsingPageData(Integer page, String search) {
 		String[]searchTokens = search.split(" ");
 		

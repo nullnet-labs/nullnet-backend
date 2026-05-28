@@ -53,7 +53,7 @@ public class PostController {
 				.body(new PostPreviewDto(
 					existingPostId != null,
 					existingPostId,
-					"[Placeholder title]"
+					postService.getPageTitle(url)
 				))
 			;
 		} catch(URISyntaxException e) {

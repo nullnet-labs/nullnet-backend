@@ -46,10 +46,15 @@ public class Post {
 	private String title;
 	
 	@Column(nullable=true)
-	private String thumbnailUrl;
-	
-	@Column(nullable=true)
 	private String imageUrl;
+	
+	/**
+	 * May use naming scheme that makes thumbnail URL redundant. Remains to be 
+	 * seen, but this field remains for now, during development while thumb & 
+	 * image URLs are able to have potentially fluid relationships.
+	 */
+	@Column(nullable=true)
+	private String thumbnailUrl;
 	
 	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
 	private Set<PostTag> postTags = new HashSet<>();
@@ -63,8 +68,14 @@ public class Post {
 	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
 	private Set<Comment> comments = new HashSet<>();
 	
+	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
+	private Set<PostUpdateRequest> updates = new HashSet<>();
+	
 	@Column(nullable=false)
 	private Instant creationTime;
+	
+	@Column(nullable=false)
+	private Instant lastUpdateTime;
 	
 	@ManyToOne(fetch=FetchType.LAZY, optional=false)
 	@JoinColumn(name="posted_by", nullable=false)
