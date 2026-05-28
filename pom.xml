@@ -29,9 +29,13 @@
 	<properties>
 		<java.version>21</java.version>
 		
+		<jsoup.version>1.22.2</jsoup.version>
+		<playwright.version>1.60.0</playwright.version>
+		<springdoc-openapi.version>3.0.2</springdoc-openapi.version>
+		
 		<!--
-			For use while running SonarQube server on my local system at 
-			localhost:9000
+			These sonar properties are for use while running SonarQube server 
+			on my local system at localhost:9000
 			
 			Scans are initiated through my own custom Maven build 
 			configuration in Eclipse. In deployment, I would get the Sonar 
@@ -96,7 +100,7 @@
 		<dependency>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-		    <version>3.0.2</version>
+		    <version>${springdoc-openapi.version}</version>
 		    <scope>compile</scope>
 		</dependency>
 		
@@ -200,6 +204,26 @@
 		    <groupId>com.github.ben-manes.caffeine</groupId>
 		    <artifactId>caffeine</artifactId>
 		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- Internal web browser automation, to automate screenshot display for users to more easily post web pages -->
+		<!-- Source: https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
+		<dependency>
+		    <groupId>com.microsoft.playwright</groupId>
+		    <artifactId>playwright</artifactId>
+		    <version>${playwright.version}</version>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- 
+			The jsoup HTML parser library, to automate simple metadata retrieval (like page titles) for users to more easily post web pages,
+			without the added server overhead of Playwright
+		-->
+		<!-- Source: https://jsoup.org/ -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
 		</dependency>
 	</dependencies>
 
