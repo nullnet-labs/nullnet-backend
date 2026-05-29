@@ -12,7 +12,7 @@ public class SecurityConfig {
 	
 	// https://docs.spring.io/spring-security/reference/api/java/org/springframework/security/config/annotation/web/builders/HttpSecurity.html
 	@Bean
- 	public SecurityFilterChain securityFilterChain(HttpSecurity http)  {
+ 	SecurityFilterChain securityFilterChain(HttpSecurity http)  {
 		http
 			// cross-site request forgery security disabled - will likely want to remove or modify this line before deployment
 			.csrf(csrf -> csrf.disable())
