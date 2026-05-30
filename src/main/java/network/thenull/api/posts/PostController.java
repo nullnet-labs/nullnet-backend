@@ -2,7 +2,6 @@ package network.thenull.api.posts;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,46 +39,39 @@ public class PostController {
 	public ResponseEntity<PostPreviewDto> previewNewPost(
 		@RequestParam(required=true) String url
 	) {
-		if(!url.startsWith("http://") && !url.startsWith("https://")) {
-			url = "https://" + url;
-		}
+		URI validatedUri = postService.getValidatedUriOf(url);
+		String validatedUrl = validatedUri.toString();
+		String domain = validatedUri.getHost();
+		Long existingPostId = postService.getExistingPostId(domain);
 		
 		try {
-			// implicitly validates that the input string is a URL
-			URI uri = new URI(url.toLowerCase());
-			String domain = uri.getHost();
-			
-			Long existingPostId = postService.getExistingPostId(domain);
 			// implicitly validates that the URL points to a valid Web page
-			String pageTitle = postService.getPageTitle(url);
+			String pageTitle = postService.getPageTitle(validatedUrl);
 			
 			return ResponseEntity.ok()
 				.body(new PostPreviewDto(
 					existingPostId != null,
 					existingPostId,
 					pageTitle,
-					url
+					validatedUrl
 				))
 			;
-		} catch(URISyntaxException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed URL");
 		} catch (IOException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested Web page couldn't be reached");
+			// shouldn't be reachable due to existing validation steps
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+				"The requested Web page couldn't be reached. THIS EXCEPTION SHOULD HAVE BEEN THROWN BY URI VALIDATOR."
+			);
 		}
 	}
 	
 	@GetMapping("/preview/screenshot")
 	public ResponseEntity<byte[]> getPreviewScreenshot(
-		@RequestParam(required=true) String url
+		@RequestParam(required=true) String validatedUrl
 	) {
-		if(!url.startsWith("http://") && !url.startsWith("https://")) {
-			url = "https://" + url;
-		}
-		
 		return ResponseEntity.ok()
 			.contentType(MediaType.IMAGE_PNG)
 			.header("Content-Disposition", "filename=\"screenshot.png\"")
-			.body(postService.getPageScreenshot(url))
+			.body(postService.getPageScreenshot(validatedUrl))
 		;
 	}
 	
