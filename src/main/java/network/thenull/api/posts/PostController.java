@@ -5,8 +5,8 @@ import java.net.URI;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import network.thenull.api.posts.dto.PostBrowsingPageDto;
@@ -23,7 +27,6 @@ import network.thenull.api.posts.dto.PostPreviewDto;
 /**
  * Handles requests for post retrieval
  */
-@Validated
 @RestController
 @Slf4j
 @RequestMapping("/api/posts")
@@ -35,6 +38,33 @@ public class PostController {
 		this.postService = postService;
 	}
 	
+	@Operation(
+		summary="Preview data for a new post.", 
+		description="Retrieve post-preview data for a post that the user is requesting to add to the service."
+			+ " Does not include image / screenshot data, as this is carried out by the \"preview/screenshot\""
+			+ " endpoint instead. Identifies the post ID if the page already exists in the application."
+			+ " Also validates the input URL and resolves any redirects (i.e., \"google.com\" will become"
+			+ " \"https://www.google.com\").",
+		responses= {
+			@ApiResponse(
+				responseCode="200",
+				description="Successfully validated the input URL and populated post-preview data",
+				content=@Content(
+					schema=@Schema(
+						implementation=PostPreviewDto.class
+					)
+				)
+			),
+			@ApiResponse(
+				responseCode="400",
+				description="The URL couldn't be validated, or the target page couldn't be reached",
+				content=@Content(
+					mediaType="application/json",
+					schema=@Schema(implementation=ProblemDetail.class)
+				)
+			)
+		}
+	)
 	@GetMapping("/preview")
 	public ResponseEntity<PostPreviewDto> previewNewPost(
 		@RequestParam(required=true) String url
@@ -55,24 +85,50 @@ public class PostController {
 				))
 			;
 		} catch (IOException e) {
-			// shouldn't be reachable due to existing validation steps
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-				"The requested Web page at " 
-					+ validatedUrl 
-					+ "couldn't be reached. Automatic title retrieval may be blocked by the target site, "
-					+ "or URL validation may be tripping bot detection."
-			);
+			return ResponseEntity.ok()
+				.body(new PostPreviewDto(
+					existingPostId != null,
+					existingPostId,
+					"!!!COULDN'T RETRIEVE PAGE TITLE!!!",
+					validatedUrl
+				))
+			;
 		}
 	}
 	
+	@Operation(
+		summary="Screenshot retrieval for a new post.", 
+		description="Retrieve screenshot data for a URL. Validates URL before retrieving screenshot data.",
+		responses= {
+			@ApiResponse(
+				responseCode="200",
+				description="Successfully acquired screenshot",
+				content=@Content(
+					mediaType="image/png",
+					schema=@Schema(
+						type="string",
+						format="binary"
+					)
+				)
+			),
+			@ApiResponse(
+				responseCode="400",
+				description="The URL couldn't be validated, or the target page couldn't be reached",
+				content=@Content(
+					mediaType="application/json",
+					schema=@Schema(implementation=ProblemDetail.class)
+				)
+			)
+		}
+	)
 	@GetMapping("/preview/screenshot")
 	public ResponseEntity<byte[]> getPreviewScreenshot(
-		@RequestParam(required=true, name="url") String validatedUrl
+		@RequestParam(required=true) String url
 	) {
 		return ResponseEntity.ok()
 			.contentType(MediaType.IMAGE_PNG)
 			.header("Content-Disposition", "filename=\"screenshot.png\"")
-			.body(postService.getPageScreenshot(validatedUrl))
+			.body(postService.getPageScreenshot(postService.getValidatedUriOf(url).toString()))
 		;
 	}
 	
