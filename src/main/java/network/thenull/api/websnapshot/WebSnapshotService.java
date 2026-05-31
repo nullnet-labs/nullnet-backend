@@ -24,13 +24,15 @@ public class WebSnapshotService {
 		;
 	}
 	
-	public byte[] getPageScreenshot(String url) {
+	public byte[] getPageScreenshot(String url, int width, int height) {
 		try (Playwright playwright = Playwright.create()) {
 			Browser browser = playwright.chromium().launch(
 				new BrowserType.LaunchOptions().setHeadless(true)
 			);
 			
-			Page page = browser.newPage();
+			Page page = browser.newPage(
+				new Browser.NewPageOptions().setViewportSize(width, height)
+			);
 			page.navigate(
 				url,
 				new Page.NavigateOptions().setTimeout(5000)

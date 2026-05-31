@@ -3,7 +3,6 @@ package network.thenull.api.posts;
 import java.io.IOException;
 import java.net.URI;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -123,12 +121,18 @@ public class PostController {
 	)
 	@GetMapping("/preview/screenshot")
 	public ResponseEntity<byte[]> getPreviewScreenshot(
-		@RequestParam(required=true) String url
+		@RequestParam(required=true) String url,
+		@RequestParam(defaultValue="1280") @Min(1) int width,
+		@RequestParam(defaultValue="720") @Min(1) int height
 	) {
 		return ResponseEntity.ok()
 			.contentType(MediaType.IMAGE_PNG)
 			.header("Content-Disposition", "filename=\"screenshot.png\"")
-			.body(postService.getPageScreenshot(postService.getValidatedUriOf(url).toString()))
+			.body(postService.getPageScreenshot(
+				postService.getValidatedUriOf(url).toString(),
+				width,
+				height
+			))
 		;
 	}
 	

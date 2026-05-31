@@ -50,8 +50,8 @@ public class PostService {
 		return webSnapshotService.getPageTitle(url);
 	}
 	
-	public byte[] getPageScreenshot(String url) {
-		return webSnapshotService.getPageScreenshot(url);
+	public byte[] getPageScreenshot(String url, int width, int height) {
+		return webSnapshotService.getPageScreenshot(url, width, height);
 	}
 	
 	public PostBrowsingPageDto getPostBrowsingPageData(Integer page, String search) {
