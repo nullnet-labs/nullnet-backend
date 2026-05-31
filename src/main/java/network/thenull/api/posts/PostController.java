@@ -41,11 +41,9 @@ public class PostController {
 	) {
 		URI validatedUri = postService.getValidatedUriOf(url);
 		String validatedUrl = validatedUri.toString();
-		String domain = validatedUri.getHost();
-		Long existingPostId = postService.getExistingPostId(domain);
+		Long existingPostId = postService.getExistingPostId(validatedUri.getHost());
 		
 		try {
-			// implicitly validates that the URL points to a valid Web page
 			String pageTitle = postService.getPageTitle(validatedUrl);
 			
 			return ResponseEntity.ok()
@@ -59,14 +57,17 @@ public class PostController {
 		} catch (IOException e) {
 			// shouldn't be reachable due to existing validation steps
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-				"The requested Web page couldn't be reached. THIS EXCEPTION SHOULD HAVE BEEN THROWN BY URI VALIDATOR."
+				"The requested Web page at " 
+					+ validatedUrl 
+					+ "couldn't be reached. Automatic title retrieval may be blocked by the target site, "
+					+ "or URL validation may be tripping bot detection."
 			);
 		}
 	}
 	
 	@GetMapping("/preview/screenshot")
 	public ResponseEntity<byte[]> getPreviewScreenshot(
-		@RequestParam(required=true) String validatedUrl
+		@RequestParam(required=true, name="url") String validatedUrl
 	) {
 		return ResponseEntity.ok()
 			.contentType(MediaType.IMAGE_PNG)

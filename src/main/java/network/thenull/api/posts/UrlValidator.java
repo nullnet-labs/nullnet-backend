@@ -67,11 +67,8 @@ public class UrlValidator {
 			url = url.substring(7);
 		}
 		
-		// check https first
-		URI uri = new URI("https://" + url);
-		
 		// check for an SSRF-safe host
-		validateHost(uri);
+		validateHost(new URI("https://" + url));
 		
 		// check the location being addressed
 		return getResolvedUri(url);
@@ -130,8 +127,6 @@ public class UrlValidator {
 				throw new IllegalArgumentException("The page at the input URL is not available");
 			}
 		}
-		
-		// throw new IllegalArgumentException("The page at the input URL is not available");
 		
 		return uri;
 	}

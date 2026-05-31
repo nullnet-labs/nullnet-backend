@@ -17,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSnapshotService {
 	
 	public String getPageTitle(String url) throws IOException {
-		return Jsoup.connect(url).get().title();
+		return Jsoup.connect(url)
+			.userAgent(url)
+			.get()
+			.title()
+		;
 	}
-	
-
 	
 	public byte[] getPageScreenshot(String url) {
 		try (Playwright playwright = Playwright.create()) {
@@ -29,7 +31,10 @@ public class WebSnapshotService {
 			);
 			
 			Page page = browser.newPage();
-			page.navigate(url);
+			page.navigate(
+				url,
+				new Page.NavigateOptions().setTimeout(5000)
+			);
 			
 			byte[] screenshot = page.screenshot(
 				new Page.ScreenshotOptions()
