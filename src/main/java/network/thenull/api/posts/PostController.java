@@ -41,7 +41,7 @@ public class PostController {
 		description="Retrieve post-preview data for a post that the user is requesting to add to the service."
 			+ " Does not include image / screenshot data, as this is carried out by the \"preview/screenshot\""
 			+ " endpoint instead. Identifies the post ID if the page already exists in the application."
-			+ " Also validates the input URL and resolves any redirects (i.e., \"google.com\" will become"
+			+ " Also validates the input URL and resolves any 3XX redirects (i.e., \"google.com\" will become"
 			+ " \"https://www.google.com\").",
 		responses= {
 			@ApiResponse(
